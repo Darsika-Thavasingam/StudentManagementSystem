@@ -46,6 +46,7 @@ class GraduateStudent(Student):
 
     #list to store students
 students = []
+FILENAME = "students.txt"
 
 def add_student():#add student details
     try:
@@ -70,7 +71,7 @@ def add_graduate_student():#add graduate student details
         thesis = input("Enter thesis title: ")
         g = GraduateStudent(name, age, grade, thesis)
         students.append(g)
-        print
+        print("Graduate student added successfully!")
     except ValueError:
         print("Invalid input.")
 
@@ -82,6 +83,8 @@ def view_students():
     else:
         for s in students:
             s.display_info()
+            print("-" * 30)
+
 
 #search student by id
 def search_student():
@@ -90,43 +93,44 @@ def search_student():
         Found = False
         for s in students:
             if s.get_id() == sid:
-                s.displ4ay_info()
+                s.display_info()
                 Found = True
                 break
-            if not Found:
-                print("Student not found.")
+        if not Found:
+            print("Student not found.")
     except ValueError:
         print("Invalid input!")
 
 #save students to file
 def save_to_file():
-    with open("student.txt", "a") as f:
+    with open(FILENAME, "w") as f: 
         for s in students:
-            if s in students:
-                if isinstance(s, GraduateStudent):
-                    f.write(str(s.get_id()) + "," +s.name + "," + str(s.age) + "," + str(s.grade) + "," + s.thesis + ",Graduate\n")
-                else:
-                        f.write(str(s.get_id()) + "," + s.name + "," + str(s.age) + "," + str(s.grade) + ",N/A,Student\n")
+            if isinstance(s, GraduateStudent):
+                f.write(f"{s.get_id()},{s.name},{s.age},{s.grade},{s.thesis},Graduate\n")
+            else:
+                f.write(f"{s.get_id()},{s.name},{s.age},{s.grade},N/A,Student\n")
     print("Data saved to students.txt")
 
 def load_from_file():
     try:
-        with open("students.txt","r") as f:
+        with open(FILENAME, "r") as f:
             for line in f:
-                data = line.strip().split(",")#line.strip() removes any leading/trailing whitespace characters, including newline characters. split(",") splits the line into a list of values based on the comma delimiter.
-                if data[-1] == "graduate":
+                data = line.strip().split(",")
+                if data[-1] == "Graduate":
                     g = GraduateStudent(data[1], int(data[2]), float(data[3]), data[4])
                     students.append(g)
                 else:
-                    s = Student(data[1], int(data[2], float(data[3])))
+                    s = Student(data[1], int(data[2]), float(data[3]))
                     students.append(s)
+        if students:
+            Student.total_students = max(s.get_id() for s in students)
         print("Data loaded from students.txt")
     except FileNotFoundError:
         print("No saved data found.")
 
 #main program
 def main():
-    Student.welcome() #static method call
+    Student.welcome() 
 
     while True:
         print("\n==== Student Management System ====")
