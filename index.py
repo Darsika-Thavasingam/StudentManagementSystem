@@ -1,6 +1,5 @@
 #student management system
 
-
 #class
 class Student:
     total_students = 0 #class variable
